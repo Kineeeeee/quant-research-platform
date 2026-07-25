@@ -30,3 +30,28 @@ reliable and occasionally gappy, but fine for research.
 raw = yf.download('AAPL', start='2020-01-01', end='2024-12-31')
 # cleaner sorts by date, ffill/bfill gaps, drops all-NaN rows
 ```
+
+
+## Backtesting engine
+
+Files: `src/backtest/engine.py`, `portfolio.py`, `order.py`, `strategies/base.py`
+
+Simulates trading on historical data so I can test an idea before risking any
+money. Event-driven: process one day at a time, in order, so there's no
+lookahead bias.
+
+Main loop (`engine.py`):
+1. Fill pending orders from the previous day at today's price.
+2. Ask the strategy what to do today via `strategy.next(...)`.
+3. Record equity = cash + market value of positions.
+
+Pieces:
+- `Order` - a trading instruction (dataclass with type/direction/status).
+- `Portfolio` - tracks cash and positions, applies commission (0.1%) and
+  slippage (0.05%) on each fill.
+- `Strategy` base class - `setup()` computes indicators once, `next()` runs
+  each bar. Concrete strategies subclass this.
+
+Simplifications for now: market orders only, fills at close, fixed slippage.
+Real markets have limit orders, partial fills, and impact that depends on size.
+Risk controls come later once there's an actual strategy to constrain.

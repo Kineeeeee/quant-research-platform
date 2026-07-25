@@ -24,5 +24,6 @@ pip install -r requirements.txt
 
 ## Status
 
-Data layer working: can download prices from yfinance and clean them.
-Strategies and backtesting next.
+Backtest engine runs: event-driven loop, portfolio accounting with
+commission/slippage, and a risk manager that vetoes bad orders. Need an
+actual strategy to feed it next.
