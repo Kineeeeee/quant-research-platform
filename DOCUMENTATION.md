@@ -55,3 +55,33 @@ Pieces:
 Simplifications for now: market orders only, fills at close, fixed slippage.
 Real markets have limit orders, partial fills, and impact that depends on size.
 Risk controls come later once there's an actual strategy to constrain.
+
+
+## Research: does alpha actually exist?
+
+Files: `notebooks/01_momentum_research.ipynb`, `notebooks/02_mean_reversion.ipynb`
+
+Before building strategies I wanted to check whether the patterns I'd trade
+are even real. Most trading ideas sound good and don't survive a proper test.
+
+Process for each hypothesis: define the signal, rank stocks cross-sectionally
+each day, go long the top 20% / short the bottom 20%, measure forward returns,
+then t-test the long-short spread.
+
+Findings so far:
+- NB01 Momentum (6M lookback, 1M hold): past winners do keep winning, but the
+  edge is modest. On non-overlapping monthly spreads: Sharpe ~0.67, p=0.042
+  (just significant). Drawdown is ugly (-43%). Worth building a strategy on,
+  but with a vol/crash filter and realistic expectations - not a free lunch.
+- NB02 Mean reversion (1-4 week): on large-cap US names, losers keep losing -
+  this is really more momentum than reversion. So no short-term MR strategy
+  on this universe. Probably needs small-caps or intraday horizons.
+
+Stats notes to keep straight (learned the hard way in NB01):
+- p < 0.05 = statistically significant (< 5% chance it's random).
+- Overlapping forward returns inflate significance badly - consecutive daily
+  21-day returns share 20 days of data, so ~2300 daily obs are really only
+  ~113 independent ones. My first run gave t~7, p~0, Sharpe 2.3, which was
+  nonsense. After subsampling to non-overlapping windows: t~1.5, Sharpe ~0.5.
+  Always subsample (or Newey-West) before trusting a t-stat on overlapping
+  returns.

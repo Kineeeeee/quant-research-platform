@@ -24,6 +24,6 @@ pip install -r requirements.txt
 
 ## Status
 
-Backtest engine runs: event-driven loop, portfolio accounting with
-commission/slippage, and a risk manager that vetoes bad orders. Need an
-actual strategy to feed it next.
+Backtest engine runs (event-driven loop, portfolio accounting with
+commission/slippage). Started the research side: momentum looks real,
+short-term mean reversion doesn't on large-caps.
