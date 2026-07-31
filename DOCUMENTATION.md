@@ -85,3 +85,27 @@ Stats notes to keep straight (learned the hard way in NB01):
   nonsense. After subsampling to non-overlapping windows: t~1.5, Sharpe ~0.5.
   Always subsample (or Newey-West) before trusting a t-stat on overlapping
   returns.
+
+
+## Research: volatility clustering (NB03)
+
+File: `notebooks/03_volatility_clustering.ipynb`
+
+Studied SPY 2005-2024. Question: are big moves followed by big moves?
+
+Findings:
+- Raw daily returns have near-zero autocorrelation (lag-1 ~ -0.10) - you
+  can't predict direction. Expected, markets are roughly efficient on
+  direction.
+- But ABSOLUTE returns are strongly autocorrelated (lag-1 ~ 0.32, still ~0.24
+  at lag 20). So volatility clusters even though direction doesn't. This is
+  the classic GARCH/ARCH effect.
+- Fat tails: extreme moves happen way more often than a normal distribution
+  predicts.
+- EWMA(span=30) vol forecast correlates ~0.68 with next-month realised vol
+  (R^2 ~ 0.46). So vol is genuinely forecastable, unlike returns.
+
+Why this matters for the platform: since vol is predictable but direction
+isn't, position sizing should key off vol, not off return forecasts. This is
+the motivation for the vol-adjusted momentum strategy and the vol-based
+sizing in the risk manager later on.

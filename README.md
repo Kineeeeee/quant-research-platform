@@ -25,5 +25,6 @@ pip install -r requirements.txt
 ## Status
 
 Backtest engine runs (event-driven loop, portfolio accounting with
-commission/slippage). Started the research side: momentum looks real,
-short-term mean reversion doesn't on large-caps.
+commission/slippage). Research so far: weak momentum, no short-term mean
+reversion on large-caps, and clear volatility clustering (vol is forecastable
+even though direction isn't).
