@@ -109,3 +109,27 @@ Why this matters for the platform: since vol is predictable but direction
 isn't, position sizing should key off vol, not off return forecasts. This is
 the motivation for the vol-adjusted momentum strategy and the vol-based
 sizing in the risk manager later on.
+
+
+## First strategy + performance metrics
+
+Files: `src/strategies/momentum.py`, `src/analytics/metrics.py`
+
+First actual strategy: `SMACrossover`. Classic - hold when the short SMA
+(50d) is above the long SMA (200d), flat otherwise. It's a trend follower,
+so it should ride the momentum the research found. Simple on purpose - I
+wanted something to sanity-check the engine before building anything fancy.
+
+Note: it's position-based, not event-based - it checks whether short > long
+each bar rather than detecting the exact crossover day. Good enough for a
+first pass.
+
+Metrics (`metrics.py`) - can't judge a strategy on total return alone, need
+risk-adjusted numbers:
+- `sharpe_ratio` - return per unit of volatility, annualised (x sqrt(252)).
+- `max_drawdown` - worst peak-to-trough drop. This is what actually hurts.
+- `daily_win_rate` - fraction of up days.
+- `total_return` - overall % gain.
+
+Sharpe is the headline number but drawdown matters just as much - a 0.8
+Sharpe with a 15% max drawdown beats a 1.0 Sharpe that goes through -50%.

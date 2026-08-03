@@ -24,7 +24,7 @@ pip install -r requirements.txt
 
 ## Status
 
-Backtest engine runs (event-driven loop, portfolio accounting with
-commission/slippage). Research so far: weak momentum, no short-term mean
-reversion on large-caps, and clear volatility clustering (vol is forecastable
-even though direction isn't).
+First strategy (SMA crossover) runs end-to-end through the engine, and I can
+score it with Sharpe / max drawdown / win rate. Research so far: weak
+momentum, no short-term mean reversion on large-caps, clear volatility
+clustering. More strategies next.
