@@ -133,3 +133,25 @@ risk-adjusted numbers:
 
 Sharpe is the headline number but drawdown matters just as much - a 0.8
 Sharpe with a 15% max drawdown beats a 1.0 Sharpe that goes through -50%.
+
+
+## More strategies
+
+Files: `src/strategies/rsi.py`, `macd.py`, `bollinger.py`
+
+Added a few more classic strategies to have something to compare against SMA
+and to exercise different signal types:
+
+- `RSIReversion` - buy when RSI < 30 (oversold), sell when RSI > 70
+  (overbought). Mean-reversion. Uses the `ta` library for the RSI calc.
+- `MACDStrategy` - buy/sell on MACD/Signal crossovers, detected via the
+  histogram flipping sign. This one is a proper event-based crossover
+  (tracks the previous bar's histogram), unlike the SMA one.
+- `BollingerMeanReversion` - buy at the lower band, sell at the upper band.
+- `BollingerBreakout` - the opposite: buy when price breaks *above* the upper
+  band, sell below the lower. Same bands, opposite thesis. Kept both because
+  which one works depends entirely on whether the market is trending or
+  ranging - a nice illustration that the indicator isn't the strategy.
+
+None of these are meant to be great on their own - they're building blocks and
+sanity checks for the engine.

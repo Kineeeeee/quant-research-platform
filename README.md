@@ -24,7 +24,7 @@ pip install -r requirements.txt
 
 ## Status
 
-First strategy (SMA crossover) runs end-to-end through the engine, and I can
-score it with Sharpe / max drawdown / win rate. Research so far: weak
-momentum, no short-term mean reversion on large-caps, clear volatility
-clustering. More strategies next.
+Several classic strategies now run through the engine: SMA crossover, RSI
+reversion, MACD, and Bollinger (both mean-reversion and breakout). Scored
+with Sharpe / max drawdown / win rate. Next: proper testing and risk
+controls.
