@@ -155,3 +155,25 @@ and to exercise different signal types:
 
 None of these are meant to be great on their own - they're building blocks and
 sanity checks for the engine.
+
+
+## Tests
+
+Files: `tests/test_metrics.py`, `tests/test_strategies.py`, `tests/test_portfolio.py`
+
+Once there were a few strategies and the portfolio doing real accounting, I
+wanted a safety net before adding more moving parts. `pytest tests/ -v`.
+
+What's covered:
+- Metrics: known-value checks (e.g. 100->120->90 gives -25% drawdown), plus
+  edge cases - zero-std Sharpe returns NaN instead of dividing by zero, win
+  rate excludes flat days, 100% drawdown.
+- Strategies: SMA golden/death crosses fire correctly, no double-buy while
+  already long, no signal while indicators are still NaN. Same for RSI
+  oversold/overbought.
+- Portfolio: buy/sell update cash and positions, commission + slippage are
+  applied, and it correctly rejects buys with insufficient cash / sells with
+  no position.
+
+The edge cases are the point - the happy path rarely breaks, the divide-by-
+zero and off-by-one cases do.
