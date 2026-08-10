@@ -24,7 +24,7 @@ pip install -r requirements.txt
 
 ## Status
 
-Several classic strategies now run through the engine: SMA crossover, RSI
-reversion, MACD, and Bollinger (both mean-reversion and breakout). Scored
-with Sharpe / max drawdown / win rate. Next: proper testing and risk
-controls.
+Engine now enforces risk limits (position caps, max open positions, drawdown
+circuit breaker, 2% rule) and does vol-adjusted position sizing. Several
+strategies run through it (SMA, RSI, MACD, Bollinger), scored with Sharpe /
+max drawdown / win rate, all covered by unit tests.
