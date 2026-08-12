@@ -133,3 +133,15 @@ It also does sizing, not just vetoing:
 - `calculate_vol_adjusted_size` - scales that by vol_target / current_vol so high-vol names get smaller positions. This is the NB03 finding (vol is forecastable) turned into an actual sizing rule. Scalar capped to 0.25x-2x so a very calm stretch doesn't lever up absurdly.
 
 Sells always pass - they only reduce exposure.
+
+## Vol-adjusted momentum
+
+Files: `src/strategies/vol_momentum.py`, `examples/tune_vol_momentum.py`
+
+This is the first strategy that actually uses the research rather than being a textbook indicator. `VolAdjustedMomentum` combines three threads:
+- Signal from the SMA crossover (NB01 momentum).
+- Sizing from EWMA vol (NB03: vol is the forecastable part, so size off it - smaller positions when vol is high, capped 0.25x-2x).
+- A long-term trend filter (price vs 200d SMA): only go long in an uptrend, force an exit when the market rolls over. Plain SMA momentum gets destroyed in bear markets, so this is the guard rail.
+- A vol cutoff: sit out entirely when vol blows past 2x its median.
+
+`tune_vol_momentum.py` is a small grid search over short/long windows, the vol filter multiplier, and base size. Nothing fancy - just eyeballing which parameter regions give a decent Sharpe without the drawdown getting silly. (Proper out-of-sample validation comes next with walk-forward - a single in-sample grid search is exactly how you fool yourself.)

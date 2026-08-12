@@ -24,7 +24,8 @@ pip install -r requirements.txt
 
 ## Status
 
-Engine now enforces risk limits (position caps, max open positions, drawdown
-circuit breaker, 2% rule) and does vol-adjusted position sizing. Several
-strategies run through it (SMA, RSI, MACD, Bollinger), scored with Sharpe /
-max drawdown / win rate, all covered by unit tests.
+Built the first research-driven strategy: vol-adjusted momentum (SMA signal +
+EWMA vol sizing + trend filter). Engine enforces risk limits and vol-based
+sizing; classic strategies (SMA, RSI, MACD, Bollinger) all run through it,
+scored with Sharpe / max drawdown / win rate and covered by unit tests. Next:
+validate out-of-sample.
