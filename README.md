@@ -24,8 +24,7 @@ pip install -r requirements.txt
 
 ## Status
 
-Built the first research-driven strategy: vol-adjusted momentum (SMA signal +
-EWMA vol sizing + trend filter). Engine enforces risk limits and vol-based
-sizing; classic strategies (SMA, RSI, MACD, Bollinger) all run through it,
-scored with Sharpe / max drawdown / win rate and covered by unit tests. Next:
-validate out-of-sample.
+Added walk-forward validation (in-sample optimise, out-of-sample test, with an
+overfitting flag) so strategies get judged out-of-sample, not on the history
+they were tuned on. Vol-adjusted momentum, risk limits, the classic strategies,
+and unit tests are all in place.

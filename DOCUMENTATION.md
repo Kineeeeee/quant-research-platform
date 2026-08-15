@@ -145,3 +145,15 @@ This is the first strategy that actually uses the research rather than being a t
 - A vol cutoff: sit out entirely when vol blows past 2x its median.
 
 `tune_vol_momentum.py` is a small grid search over short/long windows, the vol filter multiplier, and base size. Nothing fancy - just eyeballing which parameter regions give a decent Sharpe without the drawdown getting silly. (Proper out-of-sample validation comes next with walk-forward - a single in-sample grid search is exactly how you fool yourself.)
+
+## Walk-forward validation
+
+Files: `src/analytics/walk_forward.py`, `examples/run_walk_forward.py`
+
+The single grid search in the tuning script is exactly how you fool yourself - pick the params that looked best on the whole history and you've fit the noise. Walk-forward is the fix: slide a window, optimise on the in-sample block, then score on the next out-of-sample block the optimiser never touched.
+
+`WalkForwardAnalyzer` does two things:
+- `run(params)` - runs one fixed parameter set across every OOS window. Tells you if a hand-picked config is consistent or got lucky once.
+- `run_with_optimization(grid)` - the honest version: re-optimises on each IS window, tests on the matching OOS window, and reports IS-vs-OOS Sharpe degradation. If OOS is less than half of IS, it flags overfitting risk.
+
+Running SMA vs vol-adjusted momentum this way is the real test - average Sharpe matters less than the worst window and how consistently each is positive. A strategy with a lower average but a much better worst case is usually the one you'd actually run.
