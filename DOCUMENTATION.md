@@ -157,3 +157,18 @@ The single grid search in the tuning script is exactly how you fool yourself - p
 - `run_with_optimization(grid)` - the honest version: re-optimises on each IS window, tests on the matching OOS window, and reports IS-vs-OOS Sharpe degradation. If OOS is less than half of IS, it flags overfitting risk.
 
 Running SMA vs vol-adjusted momentum this way is the real test - average Sharpe matters less than the worst window and how consistently each is positive. A strategy with a lower average but a much better worst case is usually the one you'd actually run.
+
+## Factor engine
+
+Files: `src/factors/`, `notebooks/04_sector_rotation.ipynb`, `examples/run_factor_research.py`
+
+The momentum notebook did cross-sectional ranking by hand. The factor engine turns that into a reusable framework: a `Factor` scores the universe each day, the engine ranks, forms long-top / short-bottom quintiles, and reports spread Sharpe, IC, and significance.
+
+Factors so far (all subclass `Factor`):
+- `MomentumFactor` - Jegadeesh-Titman, past return skipping the last month.
+- `ValueFactor` - no fundamentals available, so a price-based proxy: negative past return (cheap = beaten down). Literally the mirror of momentum, which is a nice check that the engine handles opposite signs sanely.
+- `VolatilityFactor` - the low-vol anomaly, score = -rolling vol.
+
+The engine also computes IC (Information Coefficient) - the daily rank correlation between score and forward return. IC > ~0.05 is a usable signal; it's a gentler, more stable measure than the long-short spread.
+
+Same overlap trap as the notebooks applies here, so `_compute_metrics` subsamples to non-overlapping windows before the t-test and Sharpe. NB04 (sector rotation) uses the same idea on sector ETFs and finds rotation is basically noise on this universe (t ~ -0.15) - another honest negative result.

@@ -24,7 +24,7 @@ pip install -r requirements.txt
 
 ## Status
 
-Added walk-forward validation (in-sample optimise, out-of-sample test, with an
-overfitting flag) so strategies get judged out-of-sample, not on the history
-they were tuned on. Vol-adjusted momentum, risk limits, the classic strategies,
-and unit tests are all in place.
+Built a factor engine (score -> cross-sectional rank -> long/short quintiles ->
+Sharpe / IC / significance) with momentum, value, and low-vol factors, plus a
+sector-rotation study. Walk-forward validation, vol-adjusted momentum, risk
+limits, classic strategies, and unit tests are all in place.
