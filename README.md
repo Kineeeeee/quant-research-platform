@@ -24,7 +24,7 @@ pip install -r requirements.txt
 
 ## Status
 
-Built a factor engine (score -> cross-sectional rank -> long/short quintiles ->
-Sharpe / IC / significance) with momentum, value, and low-vol factors, plus a
-sector-rotation study. Walk-forward validation, vol-adjusted momentum, risk
-limits, classic strategies, and unit tests are all in place.
+Added multi-asset portfolio optimization (equal weight, mean-variance, risk
+parity) with an efficient-frontier plot. On top of the factor engine,
+walk-forward validation, vol-adjusted momentum, risk limits, classic
+strategies, and unit tests.

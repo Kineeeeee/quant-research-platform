@@ -44,12 +44,8 @@ class FactorEngine:
         return self.metrics
 
     def _compute_metrics(self, holding_period: int) -> Dict:
-        # got burned by this in NB01: spread is daily but each point is a
-        # holding_period-day forward return, so consecutive points share almost
-        # all their data -> not independent. Feeding the raw daily series to a
-        # t-test pretends ~1700 obs when there are really ~80, and the t-stat
-        # blows up by ~sqrt(holding_period). Take every holding_period-th point
-        # so the windows don't overlap. Crude vs Newey-West but easy to trust.
+        # overlapping fwd returns fake the t-stat (see NB01) -> subsample to
+        # non-overlapping windows before testing
         indep = self.spread_returns.iloc[::holding_period].dropna()
         ann_sharpe = indep.mean() / indep.std() * np.sqrt(252 / holding_period)
         pct_positive = (indep > 0).mean() * 100
@@ -72,15 +68,12 @@ class FactorEngine:
         """Information Coefficient: daily rank correlation of score vs forward return. IC > 0.05 is decent."""
         fwd_returns = self.prices.pct_change(21).shift(-21)
         ic_series = pd.Series(index=self.scores.index, dtype=float)
-        # IC each day = how well today's ranking lines up with next-month returns.
-        # Spearman not Pearson - we only care about the ordering (rank the stocks
-        # right), not the exact magnitudes, and it shrugs off outliers.
+        # Spearman (rank, not magnitude) - we only care about getting the ordering right
         for date in self.scores.index:
             scores = self.scores.loc[date].dropna()
             fwd_ret = fwd_returns.loc[date].dropna()
             common_tickers = scores.index.intersection(fwd_ret.index)
-            # need enough names to rank or the correlation is meaningless; skip
-            # thin days rather than let a 2-stock day produce a spurious +/-1.
+            # skip thin days, too few names to rank meaningfully
             if len(common_tickers) > 5:
                 ic, _ = stats.spearmanr(scores[common_tickers], fwd_ret[common_tickers])
                 ic_series[date] = ic

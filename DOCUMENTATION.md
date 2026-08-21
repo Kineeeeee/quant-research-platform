@@ -172,3 +172,14 @@ Factors so far (all subclass `Factor`):
 The engine also computes IC (Information Coefficient) - the daily rank correlation between score and forward return. IC > ~0.05 is a usable signal; it's a gentler, more stable measure than the long-short spread.
 
 Same overlap trap as the notebooks applies here, so `_compute_metrics` subsamples to non-overlapping windows before the t-test and Sharpe. NB04 (sector rotation) uses the same idea on sector ETFs and finds rotation is basically noise on this universe (t ~ -0.15) - another honest negative result.
+
+## Portfolio optimization
+
+Files: `src/portfolio/optimizer.py`, `efficient_frontier.py`, `examples/run_portfolio_optimization.py`
+
+Everything above is about a single asset. This is the "how much of each" question across a basket. `PortfolioOptimizer` does three allocations:
+- Equal weight (1/N) - the baseline. Turns out to be a stubborn benchmark: with real data the covariance matrix is so noisy that fancier methods often can't beat 1/N out-of-sample (DeMiguel et al.). Kept it precisely to keep the others honest.
+- Mean-variance (Markowitz) - maximise Sharpe via SLSQP, long-only, fully invested. Minimises -Sharpe since scipy only minimises.
+- Risk parity - the inverse-vol shortcut (weight by 1/vol). Real risk parity equalises marginal risk contributions and needs its own solver; the shortcut only equals it when assets are uncorrelated, but it's stable and close enough for now.
+
+`EfficientFrontier` Monte-Carlos thousands of random weight vectors and plots the risk/return cloud, marking max-Sharpe and equal-weight. The upper-left edge is the frontier. Cruder than solving it analytically but it makes the tradeoff visible.
