@@ -183,3 +183,16 @@ Everything above is about a single asset. This is the "how much of each" questio
 - Risk parity - the inverse-vol shortcut (weight by 1/vol). Real risk parity equalises marginal risk contributions and needs its own solver; the shortcut only equals it when assets are uncorrelated, but it's stable and close enough for now.
 
 `EfficientFrontier` Monte-Carlos thousands of random weight vectors and plots the risk/return cloud, marking max-Sharpe and equal-weight. The upper-left edge is the frontier. Cruder than solving it analytically but it makes the tradeoff visible.
+
+## Cointegration & pairs trading
+
+Files: `src/stat_arb/cointegration.py`, `pairs_strategy.py`, `examples/run_pairs_trading.py`
+
+A different kind of edge from everything above. Instead of predicting one stock, trade the *relationship* between two. Two stocks are cointegrated if each wanders like a random walk but their spread is mean-reverting - KO and PEP is the textbook case. When the spread stretches, bet it snaps back.
+
+`CointegrationScanner`:
+- `find_pairs` - Engle-Granger test on every pair. Brute force, no multiple-testing correction, so some hits are luck - always eyeball the spread and half-life before trusting one.
+- `compute_spread` - hedge ratio from OLS (A on B), then a rolling z-score rather than full-sample, since the relationship drifts.
+- `compute_half_life` - fits an Ornstein-Uhlenbeck model (regress the change in spread on the lagged spread) and turns the mean-reversion speed into a half-life. Roughly 5-20 days is tradeable; over ~60 is too slow to bother.
+
+`PairsStrategy` trades the z-score: short the spread above +2, long below -2, exit at the mean, stop out at +/-4 in case cointegration breaks and the spread just runs away.

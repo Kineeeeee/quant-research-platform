@@ -24,7 +24,7 @@ pip install -r requirements.txt
 
 ## Status
 
-Added multi-asset portfolio optimization (equal weight, mean-variance, risk
-parity) with an efficient-frontier plot. On top of the factor engine,
-walk-forward validation, vol-adjusted momentum, risk limits, classic
-strategies, and unit tests.
+Added statistical arbitrage: a cointegration scanner (Engle-Granger, hedge
+ratio, half-life) and a z-score pairs-trading strategy. On top of portfolio
+optimization, the factor engine, walk-forward validation, vol-adjusted
+momentum, risk limits, classic strategies, and unit tests.
