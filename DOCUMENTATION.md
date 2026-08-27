@@ -196,3 +196,15 @@ A different kind of edge from everything above. Instead of predicting one stock,
 - `compute_half_life` - fits an Ornstein-Uhlenbeck model (regress the change in spread on the lagged spread) and turns the mean-reversion speed into a half-life. Roughly 5-20 days is tradeable; over ~60 is too slow to bother.
 
 `PairsStrategy` trades the z-score: short the spread above +2, long below -2, exit at the mean, stop out at +/-4 in case cointegration breaks and the spread just runs away.
+
+## ML pipeline
+
+Files: `src/ml/features.py`, `model.py`, `pipeline.py`, `src/strategies/ml_strategy.py`, `examples/run_ml_pipeline.py`
+
+The point here isn't "add ML because ML" - it's to answer whether a model beats the plain momentum/value factors. Mostly it doesn't, which is itself worth knowing.
+
+- `FeatureBuilder` - momentum at several horizons, vol, distance from SMAs, RSI. Features use past data only; the single forward-looking column is the target.
+- `AlphaModel` - ridge / lasso / random forest, wrapped so training fits the scaler on train only (fitting on everything leaks the test-set mean/std back in). Scored by IC, not R^2 or accuracy - on returns this noisy, getting the *ranking* right is all you can hope for.
+- `MLPipeline` - TimeSeriesSplit CV (never random - train on the past, test on the future) and reports IC per fold. On AAPL the average IC is ~0.01, i.e. basically no edge. Honest negative: for a single stock these features don't beat simple momentum.
+
+`MLStrategy` wires a random forest into the backtest engine. Important caveat, and I left it in on purpose: it trains on the full series in `setup()`, so its backtest is in-sample and optimistic. It's a "can we plug ML into the engine" proof, not a validated strategy - the honest evaluation lives in `pipeline.py`. Fixing it properly means retraining walk-forward, which is a bigger job.

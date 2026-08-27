@@ -24,7 +24,8 @@ pip install -r requirements.txt
 
 ## Status
 
-Added statistical arbitrage: a cointegration scanner (Engle-Granger, hedge
-ratio, half-life) and a z-score pairs-trading strategy. On top of portfolio
-optimization, the factor engine, walk-forward validation, vol-adjusted
-momentum, risk limits, classic strategies, and unit tests.
+Added an ML alpha pipeline (feature engineering, ridge/lasso/random forest,
+time-series CV scored by IC) - the honest finding is it barely beats simple
+momentum on a single stock. On top of stat arb, portfolio optimization, the
+factor engine, walk-forward validation, vol-adjusted momentum, risk limits,
+classic strategies, and unit tests.
