@@ -24,8 +24,8 @@ pip install -r requirements.txt
 
 ## Status
 
-Added an ML alpha pipeline (feature engineering, ridge/lasso/random forest,
-time-series CV scored by IC) - the honest finding is it barely beats simple
-momentum on a single stock. On top of stat arb, portfolio optimization, the
-factor engine, walk-forward validation, vol-adjusted momentum, risk limits,
-classic strategies, and unit tests.
+Added a research infrastructure layer: experiment configs, a JSON experiment
+tracker, and a runner that goes config -> backtest -> logged results (with
+parameter sweeps). Sits on top of the ML pipeline, stat arb, portfolio
+optimization, the factor engine, walk-forward validation, and everything
+before it.

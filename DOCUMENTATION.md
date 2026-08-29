@@ -208,3 +208,15 @@ The point here isn't "add ML because ML" - it's to answer whether a model beats 
 - `MLPipeline` - TimeSeriesSplit CV (never random - train on the past, test on the future) and reports IC per fold. On AAPL the average IC is ~0.01, i.e. basically no edge. Honest negative: for a single stock these features don't beat simple momentum.
 
 `MLStrategy` wires a random forest into the backtest engine. Important caveat, and I left it in on purpose: it trains on the full series in `setup()`, so its backtest is in-sample and optimistic. It's a "can we plug ML into the engine" proof, not a validated strategy - the honest evaluation lives in `pipeline.py`. Fixing it properly means retraining walk-forward, which is a bigger job.
+
+## Research infrastructure
+
+Files: `src/infrastructure/config.py`, `experiment.py`, `runner.py`
+
+By this point I had a dozen strategies, params, and data periods and no memory of which run gave what. This is the bookkeeping layer.
+
+- `ExperimentConfig` - a run described as data (strategy, params, data window, backtest settings) instead of hardcoded script args. Loads from a dict or JSON, so an experiment is reproducible and diffable.
+- `ExperimentTracker` - append-only JSON log of every run with params, metrics, and a timestamp. `best_by('sharpe')` answers "what was my best config?" without scrolling terminal scrollback. Deliberately a flat file, not a database - overkill for one person.
+- `ExperimentRunner` - ties config -> data -> strategy -> backtest -> metrics -> tracker into one call, plus `run_sweep` for a parameter grid (downloads data once and reuses it across the whole sweep).
+
+Nothing clever here, but it's the difference between "research" and "a pile of scripts".
