@@ -220,3 +220,13 @@ By this point I had a dozen strategies, params, and data periods and no memory o
 - `ExperimentRunner` - ties config -> data -> strategy -> backtest -> metrics -> tracker into one call, plus `run_sweep` for a parameter grid (downloads data once and reuses it across the whole sweep).
 
 Nothing clever here, but it's the difference between "research" and "a pile of scripts".
+
+## Execution & microstructure
+
+Files: `src/execution/order_book.py`, `market_maker.py`, `simulator.py`, `examples/run_lob_simulation.py`
+
+The backtest engine fakes fills at the close with fixed slippage. This part goes a level down to where price actually comes from: a limit order book and the people quoting into it. More "understand the plumbing" than "make money".
+
+- `OrderBook` - a real matching engine. Two heaps (bids as -price so a min-heap acts as a max-heap), price-time priority, limit orders that cross and market orders that walk the book. Partially-filled resting orders go back on.
+- `MarketMaker` - quotes a bid and ask around the mid and earns the spread, but skews its quotes against its inventory: get long and it lowers both quotes so it's keener to sell than buy. Stops quoting a side once it hits the inventory limit. This inventory risk is the market maker's real job - the spread is easy, not blowing up on a one-sided position is the hard part.
+- `MarketSimulator` - ties it together: the MM reposts quotes each tick, noise traders hit the book at random, and we track price, inventory, and PnL. Running it, the MM grinds out the spread while inventory oscillates around zero - exactly the shape you'd want.

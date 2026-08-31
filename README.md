@@ -24,8 +24,8 @@ pip install -r requirements.txt
 
 ## Status
 
-Added a research infrastructure layer: experiment configs, a JSON experiment
-tracker, and a runner that goes config -> backtest -> logged results (with
-parameter sweeps). Sits on top of the ML pipeline, stat arb, portfolio
-optimization, the factor engine, walk-forward validation, and everything
-before it.
+Added a market-microstructure layer: a limit order book (price-time priority
+matching), an inventory-aware market maker, and a tick-by-tick simulator. This
+rounds out the platform alongside research infrastructure, the ML pipeline,
+stat arb, portfolio optimization, the factor engine, walk-forward validation,
+and the strategy/backtest core.
