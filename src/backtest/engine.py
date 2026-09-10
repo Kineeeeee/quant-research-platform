@@ -28,7 +28,7 @@ class BacktestEngine:
             for order in self.strategy.orders:
                 if order.status == OrderStatus.PENDING and order.order_type.value == 'MARKET':
                     order.filled_price = current_price
-                    # risk manager gets the last word before an order fills
+                    # take risk manager right before an order fills
                     if not self.risk_manager.check_order(order, self.portfolio, current_price):
                         order.status = OrderStatus.REJECTED
                         continue

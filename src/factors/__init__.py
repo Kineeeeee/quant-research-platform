@@ -1,1 +1,1 @@
-"""Factor Research Engine — Cross-sectional factor analysis and backtesting."""
+# Cross-sectional factor research: score, rank, long/short, measure.
